@@ -1,0 +1,1004 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#121712">
+<title>8-Ball Pool</title>
+<style>
+:root{color-scheme:dark;--bg:#121712;--panel:#1c241d;--line:#344138;--text:#f4f0e5;--muted:#b2bcb0;--lime:#d6ec9d;--dark:#24311b;--gold:#d8ad77;font-family:Inter,system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 40%,#24332a 0,transparent 65%),var(--bg);color:var(--text);min-height:100vh}button,input,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.48}button:focus-visible,input:focus-visible,textarea:focus-visible,canvas:focus-visible{outline:2px solid var(--lime);outline-offset:4px}button{border:1px solid var(--line);border-radius:9px;background:#252e25;color:var(--text);padding:9px 14px;font-weight:650;font-size:.88rem}button:hover:not(:disabled){background:#333f31}.accent{background:var(--lime);color:#202b15;border-color:transparent}.accent:hover:not(:disabled){background:#e6f4bf}.flat{background:none}.link{border:0;background:none;color:var(--muted);padding:4px 2px;text-decoration:underline;text-underline-offset:3px}.link:hover:not(:disabled){background:none;color:var(--text)}[hidden]{display:none!important}
+.bar{border-bottom:1px solid #303d33;background:#151c16}.bar-inner{max-width:1144px;margin:auto;min-height:65px;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:11px;color:#e9eade;font-size:.87rem;font-weight:760;letter-spacing:.16em}.brand-ball,.title-ball{display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 35% 26%,#515a52,#131712 56%,#050705);border:1px solid #687568;box-shadow:0 3px 8px #020302a0}.brand-ball{width:32px;height:32px}.brand-ball b,.title-ball b{display:grid;place-items:center;border-radius:50%;color:#171914;background:#eee9d7;line-height:1;letter-spacing:0}.brand-ball b{width:17px;height:17px;font-size:.78rem}.modes{display:flex;gap:3px;background:#101610;padding:3px;border:1px solid #303b31;border-radius:10px}.modes button{border:0;background:none;color:#bdc6b9;padding:7px 12px;white-space:nowrap}.modes button[aria-pressed=true]{background:#303e2d;color:#f1f4e8}.modes .dot{width:7px;height:7px;background:#9da798;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:1px}.modes button[aria-pressed=true] .dot{background:var(--lime)}
+main{max-width:1120px;margin:auto;padding:26px 24px 20px}.heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:17px}.heading h1{font-family:Georgia,serif;font-weight:normal;font-size:clamp(2rem,5vw,3.35rem);letter-spacing:-.055em;line-height:1;margin:0}.heading h1 em{color:var(--lime);font-style:normal}.heading .flat{white-space:nowrap}.scoreboard{display:grid;grid-template-columns:1fr minmax(76px,.43fr) 1fr;gap:10px;margin-bottom:10px}.player,.score{min-width:0;border:1px solid var(--line);background:#1b241d;border-radius:12px;min-height:64px}.player{padding:9px 13px;display:flex;align-items:center;gap:10px}.player.active{border-color:#97ae69;background:#293826}.player:last-child{text-align:right;flex-direction:row-reverse}.avatar{display:grid;place-items:center;flex:none;width:35px;height:35px;background:#394437;color:#d9e2d5;border-radius:50%;font-size:.84rem;font-weight:800}.active .avatar{background:var(--lime);color:#26341a}.player strong{font-size:.9rem}.player .group{color:#becbb9;font-size:.73rem;margin-top:2px;min-height:15px}.balls{display:flex;gap:3px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}.player:last-child .balls{margin-left:0;margin-right:auto;justify-content:flex-start}.balls span{width:13px;height:13px;border:1px solid #0006;border-radius:50%;box-shadow:inset 0 2px 2px #fff4,inset 0 -2px 3px #0006}.balls span.stripe{background:linear-gradient(#f1edde 24%,var(--ball) 24% 73%,#e3e1d2 73%)}.balls span.sunk{opacity:.22}.score{display:grid;justify-items:center;align-content:center}.score small{font-size:.65rem;color:#bcc8b8}.score output{font-size:1.18rem;letter-spacing:.08em;font-weight:800}
+.stage{padding:7px;border:1px solid #41483a;background:#101712;border-radius:21px;box-shadow:0 15px 35px #05080680}.table-surface{position:relative;border-radius:15px;overflow:hidden;background:#493522;aspect-ratio:1120/600}canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}canvas:focus-visible{outline-offset:-3px}.win-banner{position:absolute;inset:0;display:grid;place-content:center;text-align:center;justify-items:center;gap:12px;background:#061a13a6;backdrop-filter:blur(3px);color:#fff}.title-ball{width:46px;height:46px}.title-ball b{width:23px;height:23px}.win-banner strong{font:normal clamp(1.4rem,4vw,3rem)/1.05 Georgia,serif}.win-banner .accent{min-height:39px}
+.controls{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px 24px;align-items:center;border:1px solid var(--line);background:#1b241d;border-radius:13px;margin-top:11px;padding:12px 15px}.status{margin:0;font-size:.98rem;font-weight:750}.hint{margin:4px 0 0;color:var(--muted);font-size:.78rem;line-height:1.45}.shot-controls{display:flex;align-items:center;gap:14px}.power{min-width:125px;width:clamp(125px,15vw,180px);display:grid;gap:5px;font-size:.73rem;color:#c6d1c1}.power span{display:flex;justify-content:space-between}.power output{color:var(--lime);font-weight:750;font-variant-numeric:tabular-nums}input[type=range]{accent-color:var(--lime);width:100%;margin:0;cursor:pointer}.shot-controls button{min-height:42px;min-width:90px}.foot{display:flex;justify-content:flex-end;margin-top:10px;font-size:.8rem}
+dialog{border:1px solid #52634d;border-radius:17px;padding:0;width:min(500px,calc(100% - 30px));max-height:calc(100% - 30px);color:var(--text);background:#202a21;box-shadow:0 16px 55px #000a}dialog::backdrop{background:#07100bba;backdrop-filter:blur(3px)}.dialog-inner{padding:22px}.dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.dialog-head h2{font:normal 1.85rem Georgia,serif;margin:0}.close{width:36px;height:36px;font-size:1.2rem;padding:0}.dialog-inner p,.dialog-inner li{color:#d3ddcf;font-size:.91rem;line-height:1.5}.dialog-inner ul{padding-left:20px}.dialog-inner li+li{margin-top:8px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.connection-label{display:block;margin-top:13px;font-size:.82rem;font-weight:700;color:#e4ebdf}textarea{display:block;width:100%;resize:vertical;min-height:65px;margin-top:5px;background:#111a13;color:var(--text);border:1px solid #536653;border-radius:7px;padding:8px;overflow-wrap:anywhere;font: .78rem ui-monospace,monospace}.dialog-inner .net-status{margin:13px 0 0;color:var(--lime)}.dialog-inner .net-status.error{color:#ffbcaa}
+@media(max-width:740px){.balls{display:none}.controls{gap:12px}.bar-inner{padding:0 14px}main{padding:19px 12px}.stage{padding:4px;border-radius:15px}.table-surface{border-radius:11px}}
+@media(max-width:500px){.bar-inner{min-height:56px}.brand{letter-spacing:.08em;font-size:.72rem;gap:7px}.brand-ball{width:26px;height:26px}.modes button{font-size:.75rem;padding:7px 8px}.modes .dot{display:none}.heading{margin-bottom:13px}.scoreboard{gap:5px}.player{padding:6px;gap:5px}.player,.score{min-height:51px;border-radius:8px}.avatar{width:23px;height:23px;font-size:.68rem}.player strong{font-size:.74rem}.player .group{font-size:.65rem}.controls{grid-template-columns:1fr;padding:11px}.shot-controls{justify-content:space-between}.power{flex:1;width:auto}.heading .flat{font-size:.75rem;padding:7px 9px}}
+.table-surface canvas{position:absolute;inset:0}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="bar-inner">
+    <div class="brand"><span class="brand-ball" aria-hidden="true"><b>8</b></span> POOL CLUB</div>
+    <nav class="modes" aria-label="Spielmodus">
+      <button id="local-mode" aria-pressed="true">Am selben PC</button>
+      <button id="online-mode" aria-pressed="false"><span class="dot" aria-hidden="true"></span>Online</button>
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="heading"><h1><em>8-Ball</em> Pool</h1><button class="flat" id="restart">Neu auflegen</button></div>
+  <section class="scoreboard" aria-label="Spielstand">
+    <div class="player" id="player-0"><span class="avatar" aria-hidden="true">1</span><div><strong id="name-0">Spieler 1</strong><div class="group" id="group-0"></div></div><div class="balls" id="balls-0" aria-hidden="true"></div></div>
+    <div class="score"><small>Partien</small><output id="score">0 : 0</output></div>
+    <div class="player" id="player-1"><span class="avatar" aria-hidden="true">2</span><div><strong id="name-1">Spieler 2</strong><div class="group" id="group-1"></div></div><div class="balls" id="balls-1" aria-hidden="true"></div></div>
+  </section>
+  <section class="stage" aria-label="Billardtisch">
+    <div class="table-surface">
+      <canvas id="table" tabindex="0" aria-label="Billardtisch. Mit Maus oder Touch zielen. Mit Pfeiltasten zielen und mit Leertaste stoßen."></canvas>
+      <div class="win-banner" id="win-banner" hidden><span class="title-ball" aria-hidden="true"><b>8</b></span><strong id="win-text"></strong><button id="rematch" class="accent">Nächste Partie</button></div>
+    </div>
+  </section>
+  <section class="controls" aria-label="Steuerung">
+    <div aria-live="polite"><p class="status" id="status"></p><p class="hint" id="hint"></p></div>
+    <div class="shot-controls">
+      <label class="power"><span>Stoßkraft <output id="power-value" for="power">75 %</output></span><input id="power" type="range" min="5" max="100" value="75"></label>
+      <button class="accent" id="shoot">Stoßen</button>
+    </div>
+  </section>
+  <div class="foot"><button class="link" id="rules-button">Spielregeln</button></div>
+</main>
+<dialog id="rules">
+  <div class="dialog-inner">
+    <div class="dialog-head"><h2>Spielregeln</h2><form method="dialog"><button type="submit" class="close" aria-label="Schließen">×</button></form></div>
+    <ul>
+      <li>Der Tisch bleibt nach dem Anstoß offen. Die erste regulär versenkte Farbige danach legt fest, wer die Vollen und wer die Halben spielt.</li>
+      <li>Wer korrekt eine eigene Kugel locht, bleibt am Tisch. Nach dem ersten Kugelkontakt muss eine Kugel eine Bande erreichen oder in eine Tasche fallen.</li>
+      <li>Bei einem Foul darf die andere Person die Weiße frei platzieren. Mit den Pfeiltasten lässt sie sich verschieben, mit Enter ablegen.</li>
+      <li>Sind alle eigenen Kugeln weg, gewinnt ein sauberer Stoß auf die Acht. Fällt die Acht zu früh oder bei einem Foul, gewinnt die andere Person. Beim Anstoß wird sie wieder aufgelegt.</li>
+    </ul>
+  </div>
+</dialog>
+<dialog id="online">
+  <div class="dialog-inner">
+    <div class="dialog-head"><h2>Online zu zweit</h2><form method="dialog"><button type="submit" class="close" aria-label="Schließen">×</button></form></div>
+    <div id="network-choose">
+      <p>Öffnet beide dieselbe HTML-Datei. Eine Person erstellt die Einladung, die andere schickt einen Antwortcode zurück. Der Modus braucht eine direkte Verbindung zwischen euren Browsern.</p>
+      <div class="actions"><button class="accent" id="host">Einladung erstellen</button><button id="join">Einladung annehmen</button></div>
+    </div>
+    <div id="network-exchange" hidden>
+      <label class="connection-label" id="out-label" hidden><span id="out-title"></span><textarea id="out-code" readonly spellcheck="false"></textarea></label>
+      <div class="actions" id="copy-row" hidden><button id="copy">Code kopieren</button></div>
+      <label class="connection-label" id="in-label" hidden><span id="in-title"></span><textarea id="in-code" spellcheck="false" autocomplete="off"></textarea></label>
+      <div class="actions" id="connect-row" hidden><button class="accent" id="connect"></button></div>
+    </div>
+    <div id="network-live" hidden><p>Ihr seid direkt verbunden.</p><button id="disconnect">Verbindung trennen</button></div>
+    <p class="net-status" id="net-status" role="status" hidden></p>
+    <div class="actions" id="retry-row" hidden><button id="retry">Neue Verbindung</button></div>
+  </div>
+</dialog>
+<script>
+"use strict";
+
+const WIDTH = 1120;
+const HEIGHT = 600;
+const RADIUS = 13;
+const LEFT = 68;
+const RIGHT = 1052;
+const TOP = 64;
+const BOTTOM = 536;
+const MIDDLE = WIDTH / 2;
+const STEP = 1 / 240;
+const FOOT = 740;
+const BALL_COLORS = ["#eae7db", "#e6b838", "#295ebc", "#cf4338", "#754aaf", "#df7728", "#328663", "#8d3435", "#171b1c"];
+const POCKETS = [
+  { x: LEFT + 1, y: TOP + 1, radius: 25 }, { x: MIDDLE, y: TOP - 4, radius: 23 }, { x: RIGHT - 1, y: TOP + 1, radius: 25 },
+  { x: LEFT + 1, y: BOTTOM - 1, radius: 25 }, { x: MIDDLE, y: BOTTOM + 4, radius: 23 }, { x: RIGHT - 1, y: BOTTOM - 1, radius: 25 }
+];
+const RAILS = [
+  [99, TOP, 534, TOP], [586, TOP, 1021, TOP],
+  [99, BOTTOM, 534, BOTTOM], [586, BOTTOM, 1021, BOTTOM],
+  [LEFT, 95, LEFT, 505], [RIGHT, 95, RIGHT, 505]
+];
+
+function clamp(value, low, high) {
+  return Math.min(high, Math.max(low, value));
+}
+
+function ballGroup(id) {
+  if (id >= 1 && id <= 7) return "full";
+  if (id >= 9 && id <= 15) return "stripe";
+  return null;
+}
+
+function ballColor(id) {
+  return BALL_COLORS[id > 8 ? id - 8 : id];
+}
+
+function newBall(id, x, y) {
+  return { id, x, y, vx: 0, vy: 0, sunk: false };
+}
+
+function rack(score = [0, 0], starter = 0, sequence = 0) {
+  const order = [1, 10, 3, 11, 8, 14, 6, 4, 12, 7, 2, 13, 15, 5, 9];
+  const balls = [newBall(0, 287, HEIGHT / 2)];
+  const spacing = 2 * RADIUS + 0.32;
+  for (let row = 0, index = 0; row < 5; row++) {
+    for (let spot = 0; spot <= row; spot++) {
+      balls.push(newBall(order[index++], FOOT + row * spacing * Math.sqrt(3) / 2, HEIGHT / 2 + (spot - row / 2) * spacing));
+    }
+  }
+  return {
+    balls: balls.sort((a, b) => a.id - b.id), score: [...score], groups: [null, null],
+    turn: starter, starter, sequence, phase: "aim", winner: null, breaking: true,
+    note: "Anstoß", shot: null
+  };
+}
+
+function groupIsCleared(state, group) {
+  return group !== null && state.balls.every(ball => ballGroup(ball.id) !== group || ball.sunk);
+}
+
+function canPlace(state, x, y) {
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return false;
+  if (x < LEFT + RADIUS || x > RIGHT - RADIUS || y < TOP + RADIUS || y > BOTTOM - RADIUS) return false;
+  if (POCKETS.some(pocket => Math.hypot(x - pocket.x, y - pocket.y) < pocket.radius + 3)) return false;
+  return state.balls.every(ball => ball.id === 0 || ball.sunk || Math.hypot(x - ball.x, y - ball.y) >= 2 * RADIUS + 0.3);
+}
+
+function placeCue(state, x, y) {
+  if (state.phase !== "place" || !canPlace(state, x, y)) return false;
+  Object.assign(state.balls[0], newBall(0, x, y));
+  state.phase = "aim";
+  state.note = "Die Weiße ist platziert.";
+  state.sequence++;
+  return true;
+}
+
+function startShot(state, angle, power) {
+  if (state.phase !== "aim" || !Number.isFinite(angle) || !Number.isFinite(power) || power < 5 || power > 100) return false;
+  const cue = state.balls[0];
+  const speed = 75 + 1350 * Math.pow(power / 100, 1.55);
+  cue.vx = Math.cos(angle) * speed;
+  cue.vy = Math.sin(angle) * speed;
+  state.shot = {
+    first: null, potted: [], rail: false, elapsed: 0,
+    targetEight: groupIsCleared(state, state.groups[state.turn])
+  };
+  state.sequence++;
+  state.phase = "rolling";
+  return true;
+}
+
+function collideBalls(a, b, state) {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const distanceSquared = dx * dx + dy * dy;
+  const diameter = 2 * RADIUS;
+  if (distanceSquared >= diameter * diameter) return;
+  const distance = Math.sqrt(distanceSquared);
+  const nx = distance ? dx / distance : 1;
+  const ny = distance ? dy / distance : 0;
+  const overlap = (diameter - distance) / 2 + 0.001;
+  a.x -= nx * overlap;
+  a.y -= ny * overlap;
+  b.x += nx * overlap;
+  b.y += ny * overlap;
+  const approach = (a.vx - b.vx) * nx + (a.vy - b.vy) * ny;
+  if (approach <= 0) return;
+  if (state.shot.first === null && a.id === 0) state.shot.first = b.id;
+  const impulse = approach * 0.975;
+  a.vx -= impulse * nx;
+  a.vy -= impulse * ny;
+  b.vx += impulse * nx;
+  b.vy += impulse * ny;
+}
+
+function collideRails(ball, shot) {
+  for (const [x1, y1, x2, y2] of RAILS) {
+    const x = clamp(ball.x, x1, x2);
+    const y = clamp(ball.y, y1, y2);
+    const dx = ball.x - x;
+    const dy = ball.y - y;
+    const distance = Math.hypot(dx, dy);
+    if (distance >= RADIUS) continue;
+    const nx = distance ? dx / distance : (x === LEFT ? 1 : x === RIGHT ? -1 : 0);
+    const ny = distance ? dy / distance : (y === TOP ? 1 : y === BOTTOM ? -1 : 0);
+    ball.x = x + nx * (RADIUS + 0.001);
+    ball.y = y + ny * (RADIUS + 0.001);
+    const approach = ball.vx * nx + ball.vy * ny;
+    if (approach >= 0) continue;
+    ball.vx -= 1.81 * approach * nx;
+    ball.vy -= 1.81 * approach * ny;
+    if (shot.first !== null) shot.rail = true;
+  }
+}
+
+function settle(state) {
+  const shot = state.shot;
+  const player = state.turn;
+  const other = 1 - player;
+  const assigned = state.groups[player];
+  const colored = shot.potted.filter(id => ballGroup(id));
+  const eightDown = shot.potted.includes(8);
+  const firstGroup = ballGroup(shot.first);
+  const legalContact = shot.targetEight ? shot.first === 8 : Boolean(firstGroup && (!assigned || assigned === firstGroup));
+  let foul = "";
+  if (shot.potted.includes(0)) foul = "Weiße versenkt";
+  else if (!legalContact) foul = shot.first === null ? "Keine Kugel getroffen" : "Falsche Kugel zuerst getroffen";
+  else if (!shot.rail && !shot.potted.length) foul = "Keine Bande und keine Kugel versenkt";
+
+  state.shot = null;
+  if (eightDown && !state.breaking) {
+    state.winner = !foul && shot.targetEight ? player : other;
+    state.score[state.winner]++;
+    state.phase = "over";
+    state.note = foul ? foul + "." : shot.targetEight ? "Die Acht ist gefallen." : "Die Acht ist zu früh gefallen.";
+    return;
+  }
+
+  const wasBreak = state.breaking;
+  state.breaking = false;
+  if (eightDown) {
+    for (let x = FOOT; x <= RIGHT - RADIUS; x += 1) {
+      if (!canPlace(state, x, HEIGHT / 2)) continue;
+      const cue = state.balls[0];
+      if (!cue.sunk && Math.hypot(cue.x - x, cue.y - HEIGHT / 2) < 2 * RADIUS + 0.3) continue;
+      Object.assign(state.balls[8], newBall(8, x, HEIGHT / 2));
+      break;
+    }
+  }
+  if (foul) {
+    state.turn = other;
+    state.phase = "place";
+    state.note = foul + ". Freie Lage für die Weiße.";
+    return;
+  }
+  if (!wasBreak && !assigned && colored.length) {
+    state.groups[player] = ballGroup(colored[0]);
+    state.groups[other] = state.groups[player] === "full" ? "stripe" : "full";
+  }
+  const scored = colored.some(id => !assigned || ballGroup(id) === assigned);
+  state.phase = "aim";
+  if (!scored) state.turn = other;
+  if (eightDown) state.note = "Die Acht wurde wieder aufgelegt.";
+  else if (scored) state.note = "Versenkt. Du bleibst am Tisch.";
+  else state.note = "Aufnahme beendet.";
+}
+
+function tick(state) {
+  if (state.phase !== "rolling") return;
+  const shot = state.shot;
+  for (const ball of state.balls) {
+    if (ball.sunk) continue;
+    ball.x += ball.vx * STEP;
+    ball.y += ball.vy * STEP;
+    const pocket = POCKETS.find(hole => Math.hypot(ball.x - hole.x, ball.y - hole.y) < hole.radius);
+    const outside = ball.x < LEFT - 20 || ball.x > RIGHT + 20 || ball.y < TOP - 20 || ball.y > BOTTOM + 20;
+    if (pocket || outside) {
+      shot.potted.push(ball.id);
+      ball.sunk = true;
+      ball.vx = ball.vy = 0;
+    } else {
+      collideRails(ball, shot);
+    }
+  }
+  const live = state.balls.filter(ball => !ball.sunk);
+  for (let a = 0; a < live.length; a++) {
+    for (let b = a + 1; b < live.length; b++) collideBalls(live[a], live[b], state);
+  }
+  let moving = false;
+  for (const ball of live) {
+    const speed = Math.hypot(ball.vx, ball.vy);
+    if (speed <= 5) {
+      ball.vx = ball.vy = 0;
+      continue;
+    }
+    const factor = Math.max(0, 1 - (105 / speed + 0.29) * STEP);
+    ball.vx *= factor;
+    ball.vy *= factor;
+    moving = true;
+  }
+  shot.elapsed += STEP;
+  if (!moving || shot.elapsed > 16) {
+    for (const ball of live) ball.vx = ball.vy = 0;
+    settle(state);
+  }
+}
+
+const canvas = document.getElementById("table");
+const context = canvas.getContext("2d");
+const surface = document.createElement("canvas");
+surface.width = WIDTH;
+surface.height = HEIGHT;
+
+function tableArt(ctx) {
+  const wood = ctx.createLinearGradient(0, 0, 0, HEIGHT);
+  for (const [offset, color] of [[0,"#ac774d"],[.09,"#624029"],[.49,"#71482c"],[.91,"#563822"],[1,"#805739"]]) wood.addColorStop(offset, color);
+  ctx.beginPath();
+  ctx.roundRect(0, 0, WIDTH, HEIGHT, 32);
+  ctx.fillStyle = wood;
+  ctx.fill();
+  ctx.save();
+  ctx.clip();
+
+  for (let y = 1; y < HEIGHT; y += 2.7) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    for (let x = 0; x <= WIDTH; x += 10) {
+      ctx.lineTo(x, y + Math.sin(x * .013 + y * .13) * 2 + Math.sin(x * .033 - y * .11) * .65);
+    }
+    ctx.strokeStyle = y % 8 > 4 ? "#35241734" : "#eab17a1b";
+    ctx.lineWidth = .85;
+    ctx.stroke();
+  }
+  for (const [inset, color, width] of [[4,"#deac7155",2],[12,"#2b1b15af",2],[16,"#c086525d",1],[47,"#201811",4],[50,"#0b1e17",3]]) {
+    ctx.beginPath();
+    ctx.roundRect(inset, inset, WIDTH - 2 * inset, HEIGHT - 2 * inset, Math.max(6, 30 - inset));
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.stroke();
+  }
+
+  const felt = ctx.createRadialGradient(550, 232, 22, 550, 262, 715);
+  felt.addColorStop(0, "#28785d");
+  felt.addColorStop(.6, "#20664d");
+  felt.addColorStop(1, "#124431");
+  ctx.fillStyle = felt;
+  ctx.fillRect(50, 48, WIDTH - 100, HEIGHT - 96);
+  const nap = ctx.getImageData(50, 48, WIDTH - 100, HEIGHT - 96);
+  let seed = 32451;
+  for (let i = 0; i < nap.data.length; i += 4) {
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    const shade = ((seed >>> 24) - 128) * .047;
+    for (let channel = 0; channel < 3; channel++) nap.data[i + channel] += shade;
+  }
+  ctx.putImageData(nap, 50, 48);
+
+  for (const [x1, y1, x2, y2] of RAILS) {
+    const nx = x1 === x2 ? (x1 === LEFT ? -1 : 1) : 0;
+    const ny = y1 === y2 ? (y1 === TOP ? -1 : 1) : 0;
+    const dx = x1 === x2 ? 0 : 10;
+    const dy = y1 === y2 ? 0 : 10;
+    const bevel = ctx.createLinearGradient(x1, y1, x1 + nx * 16, y1 + ny * 16);
+    bevel.addColorStop(0, "#12392b");
+    bevel.addColorStop(.26, "#29684a");
+    bevel.addColorStop(1, "#32674a");
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.lineTo(x2 + nx * 17 + dx, y2 + ny * 17 + dy);
+    ctx.lineTo(x1 + nx * 17 - dx, y1 + ny * 17 - dy);
+    ctx.closePath();
+    ctx.fillStyle = bevel;
+    ctx.fill();
+    ctx.strokeStyle = "#143425";
+    ctx.lineWidth = 1.1;
+    ctx.stroke();
+  }
+
+  for (const p of POCKETS) {
+    const corner = p.x !== MIDDLE;
+    const x = corner ? p.x + (p.x < MIDDLE ? -8 : 8) : p.x;
+    const y = p.y + (p.y < HEIGHT / 2 ? -7 : 7);
+    const radius = p.radius + (corner ? 7 : 4);
+    ctx.beginPath();
+    ctx.arc(x, y, radius + 6, 0, 2 * Math.PI);
+    ctx.fillStyle = "#312418";
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#ae84575c";
+    ctx.stroke();
+    const hole = ctx.createRadialGradient(x + 4, y - 10, 4, x, y, radius);
+    hole.addColorStop(0, "#292223");
+    hole.addColorStop(.7, "#0c1210");
+    hole.addColorStop(1, "#060906");
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+    ctx.fillStyle = hole;
+    ctx.fill();
+  }
+
+  ctx.fillStyle = "#e5d6a6";
+  for (let i = 1; i < 8; i++) {
+    if (i === 4) continue;
+    const x = LEFT + i * (RIGHT - LEFT) / 8;
+    diamond(ctx, x, 29);
+    diamond(ctx, x, HEIGHT - 29);
+  }
+  for (let i = 1; i < 4; i++) {
+    const y = TOP + i * (BOTTOM - TOP) / 4;
+    diamond(ctx, 31, y);
+    diamond(ctx, WIDTH - 31, y);
+  }
+  ctx.fillStyle = "#bbdec3a0";
+  for (const x of [287, FOOT]) {
+    ctx.beginPath();
+    ctx.arc(x, HEIGHT / 2, 2.7, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function diamond(ctx, x, y) {
+  ctx.beginPath();
+  ctx.moveTo(x, y - 4.7);
+  ctx.lineTo(x + 5, y);
+  ctx.lineTo(x, y + 4.7);
+  ctx.lineTo(x - 5, y);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawBall(ctx, ball) {
+  const {id, x, y} = ball;
+  ctx.beginPath();
+  ctx.ellipse(x + 3, y + 5, RADIUS * 1.04, RADIUS * .88, .1, 0, Math.PI * 2);
+  ctx.fillStyle = "#081d168a";
+  ctx.fill();
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(x, y, RADIUS, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.fillStyle = id > 8 ? "#ebe7d5" : ballColor(id);
+  ctx.fillRect(x - RADIUS, y - RADIUS, 2 * RADIUS, 2 * RADIUS);
+  if (id > 8) {
+    ctx.fillStyle = ballColor(id);
+    ctx.fillRect(x - RADIUS, y - 6.1, 2 * RADIUS, 12.2);
+  }
+  if (id) {
+    ctx.beginPath();
+    ctx.arc(x + .5, y + .5, 6.35, 0, Math.PI * 2);
+    ctx.fillStyle = "#fffae9";
+    ctx.fill();
+    ctx.font = "bold 8.5px Arial, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#141714";
+    ctx.fillText(id, x + .5, y + .8);
+  }
+  const depth = ctx.createRadialGradient(x - 4.5, y - 6, 3, x, y, RADIUS);
+  depth.addColorStop(0, "#ffffff65");
+  depth.addColorStop(.55, "#fff0d500");
+  depth.addColorStop(.86, "#0000001e");
+  depth.addColorStop(1, "#00000089");
+  ctx.fillStyle = depth;
+  ctx.fillRect(x - RADIUS, y - RADIUS, 2 * RADIUS, 2 * RADIUS);
+  ctx.restore();
+}
+
+function drawAim(ctx, state, angle, power) {
+  const cue = state.balls[0];
+  const dx = Math.cos(angle);
+  const dy = Math.sin(angle);
+  let length = Infinity;
+  if (dx) length = (dx > 0 ? RIGHT - RADIUS - cue.x : LEFT + RADIUS - cue.x) / dx;
+  if (dy) length = Math.min(length, (dy > 0 ? BOTTOM - RADIUS - cue.y : TOP + RADIUS - cue.y) / dy);
+  let target = null;
+  for (const ball of state.balls) {
+    if (!ball.id || ball.sunk) continue;
+    const ox = ball.x - cue.x;
+    const oy = ball.y - cue.y;
+    const forward = ox * dx + oy * dy;
+    const crossing = 4 * RADIUS * RADIUS - (ox * ox + oy * oy - forward * forward);
+    if (forward <= 0 || crossing <= 0) continue;
+    const hit = forward - Math.sqrt(crossing);
+    if (hit >= 0 && hit < length) {
+      length = hit;
+      target = ball;
+    }
+  }
+  const x = cue.x + length * dx;
+  const y = cue.y + length * dy;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(25, 22, WIDTH - 50, HEIGHT - 44);
+  ctx.clip();
+  ctx.beginPath();
+  ctx.moveTo(cue.x, cue.y);
+  ctx.lineTo(x, y);
+  ctx.setLineDash([7, 8]);
+  ctx.lineWidth = 1.7;
+  ctx.strokeStyle = "#e7f6cdac";
+  ctx.stroke();
+  if (target) {
+    ctx.beginPath();
+    ctx.moveTo(target.x, target.y);
+    ctx.lineTo(target.x + 2 * (target.x - x), target.y + 2 * (target.y - y));
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.arc(x, y, target ? RADIUS : 4, 0, Math.PI * 2);
+  ctx.fillStyle = "#e6f5d32d";
+  ctx.fill();
+  ctx.stroke();
+  ctx.translate(cue.x, cue.y);
+  ctx.rotate(angle);
+  const pull = 13 + power * .21;
+  const shaft = ctx.createLinearGradient(-228 - pull, 0, -pull, 0);
+  shaft.addColorStop(0,"#252626");
+  shaft.addColorStop(.34,"#483328");
+  shaft.addColorStop(.38,"#f0c282");
+  shaft.addColorStop(.96,"#e3c598");
+  shaft.addColorStop(.98,"#f3e2b9");
+  shaft.addColorStop(1,"#a1c8cf");
+  ctx.beginPath();
+  ctx.moveTo(-228 - pull, -5);
+  ctx.lineTo(-pull, -2.3);
+  ctx.lineTo(-pull, 2.3);
+  ctx.lineTo(-228 - pull, 5);
+  ctx.closePath();
+  ctx.fillStyle = shaft;
+  ctx.shadowColor = "#081711b0";
+  ctx.shadowBlur = 5;
+  ctx.shadowOffsetY = 3;
+  ctx.fill();
+  ctx.restore();
+}
+
+tableArt(surface.getContext("2d"));
+
+const byId = id => document.getElementById(id);
+const powerInput = byId("power");
+const shootButton = byId("shoot");
+const restartButton = byId("restart");
+const onlineDialog = byId("online");
+const connection = { peer: null, channel: null, role: null, ready: false, pending: false, timer: null };
+let game = rack();
+let angle = 0;
+let cursor = { x: 287, y: HEIGHT / 2 };
+let accumulator = 0;
+let previous = performance.now();
+
+function playerName(player) {
+  if (!connection.ready) return `Spieler ${player + 1}`;
+  return player === localPlayer() ? "Du" : "Gegenüber";
+}
+
+function localPlayer() {
+  return connection.role === "host" ? 0 : 1;
+}
+
+function mayPlay() {
+  return !connection.ready || (!connection.pending && localPlayer() === game.turn);
+}
+
+function mayRestart() {
+  return !connection.ready || (!connection.pending && connection.role === "host");
+}
+
+function updateUI() {
+  for (let player = 0; player < 2; player++) {
+    const group = game.groups[player];
+    byId(`player-${player}`).classList.toggle("active", player === game.turn && game.phase !== "over");
+    byId(`name-${player}`).textContent = playerName(player);
+    byId(`group-${player}`).textContent = group === "full" ? "Volle" : group === "stripe" ? "Halbe" : "Offener Tisch";
+    byId(`balls-${player}`).replaceChildren(...(group ? game.balls.filter(ball => ballGroup(ball.id) === group).map(ball => {
+      const icon = document.createElement("span");
+      icon.style.setProperty("--ball", ballColor(ball.id));
+      icon.style.backgroundColor = ballColor(ball.id);
+      icon.classList.toggle("stripe", group === "stripe");
+      icon.classList.toggle("sunk", ball.sunk);
+      return icon;
+    }) : []));
+  }
+  byId("score").textContent = game.score.join(" : ");
+  byId("online-mode").setAttribute("aria-pressed", String(connection.ready));
+  byId("local-mode").setAttribute("aria-pressed", String(!connection.ready));
+  let status = connection.ready ? (game.turn === localPlayer() ? "Du bist dran" : "Dein Gegenüber ist dran") : `${playerName(game.turn)} ist dran`;
+  let hint = game.note;
+  if (game.phase === "rolling" || connection.pending) {
+    status = "Der Stoß läuft …";
+    hint = "Der nächste Zug beginnt, sobald die Kugeln liegen.";
+  } else if (game.phase === "place" && mayPlay()) {
+    hint += " Tippe oder klicke auf eine freie Stelle.";
+  } else if (game.phase === "aim" && mayPlay()) {
+    hint += " Auf dem Tisch zielen, dann stoßen.";
+  } else if (game.phase === "over") {
+    status = connection.ready && game.winner === localPlayer() ? "Du hast gewonnen!" : `${playerName(game.winner)} gewinnt!`;
+  }
+  byId("status").textContent = status;
+  byId("hint").textContent = hint;
+  byId("win-banner").hidden = game.phase !== "over";
+  byId("win-text").textContent = game.phase === "over" ? status : "";
+  byId("rematch").hidden = !mayRestart();
+  restartButton.disabled = !mayRestart() || game.phase === "rolling";
+  if (!mayRestart()) restartButton.title = "Die Person, die eingeladen hat, kann neu auflegen.";
+  else restartButton.removeAttribute("title");
+  shootButton.disabled = powerInput.disabled = !mayPlay() || game.phase !== "aim";
+}
+
+function updatePower() {
+  byId("power-value").textContent = `${powerInput.value} %`;
+}
+
+function newGame(resetScore = false) {
+  const next = game.phase === "over" ? 1 - game.starter : game.starter;
+  game = rack(resetScore ? [0, 0] : game.score, resetScore ? 0 : next, game.sequence + 1);
+  angle = 0;
+  updateUI();
+  if (connection.ready && connection.role === "host") send({ type: "state", state: game });
+}
+
+function applyAction(action, player) {
+  if (player !== game.turn || action.sequence !== game.sequence) return;
+  if (action.type === "shot") {
+    if (!startShot(game, action.angle, action.power)) return;
+    if (connection.ready) send({ ...action, type: "animate" });
+  } else if (action.type === "place") {
+    if (!placeCue(game, action.x, action.y)) return;
+    if (connection.ready) send({ type: "state", state: game });
+  }
+  updateUI();
+}
+
+function play(action) {
+  if (!mayPlay()) return false;
+  action.sequence = game.sequence;
+  if (connection.ready && connection.role === "guest") {
+    if (!send(action)) return false;
+    connection.pending = true;
+    updateUI();
+  } else {
+    applyAction(action, game.turn);
+  }
+  return true;
+}
+
+function shoot() {
+  if (game.phase === "aim") play({ type: "shot", angle, power: Number(powerInput.value) });
+}
+
+function aim(event) {
+  const rect = canvas.getBoundingClientRect();
+  cursor = { x: (event.clientX - rect.left) * WIDTH / rect.width, y: (event.clientY - rect.top) * HEIGHT / rect.height };
+  const cue = game.balls[0];
+  if (Math.hypot(cursor.x - cue.x, cursor.y - cue.y) > 1) angle = Math.atan2(cursor.y - cue.y, cursor.x - cue.x);
+}
+
+canvas.addEventListener("pointermove", aim);
+canvas.addEventListener("pointerdown", event => {
+  if (!event.isPrimary || event.button !== 0 || !mayPlay()) return;
+  aim(event);
+  canvas.focus({ preventScroll: true });
+  if (game.phase === "place" && canPlace(game, cursor.x, cursor.y)) play({ type: "place", ...cursor });
+});
+canvas.addEventListener("keydown", event => {
+  if (!mayPlay() || !["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", " "].includes(event.key)) return;
+  event.preventDefault();
+  if (game.phase === "aim") {
+    if (event.key === " " || event.key === "Enter") shoot();
+    else angle += (event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1) * (event.shiftKey ? .003 : .02);
+  } else if (game.phase === "place") {
+    if (event.key === "Enter" || event.key === " ") {
+      if (canPlace(game, cursor.x, cursor.y)) play({ type: "place", ...cursor });
+    } else {
+      const dx = event.key === "ArrowLeft" ? -1 : event.key === "ArrowRight" ? 1 : 0;
+      const dy = event.key === "ArrowUp" ? -1 : event.key === "ArrowDown" ? 1 : 0;
+      cursor.x = clamp(cursor.x + 6 * dx, LEFT + RADIUS, RIGHT - RADIUS);
+      cursor.y = clamp(cursor.y + 6 * dy, TOP + RADIUS, BOTTOM - RADIUS);
+    }
+  }
+});
+powerInput.addEventListener("input", updatePower);
+shootButton.addEventListener("click", shoot);
+restartButton.addEventListener("click", () => { if (mayRestart()) newGame(); });
+byId("rematch").addEventListener("click", () => { if (mayRestart()) newGame(); });
+byId("rules-button").addEventListener("click", () => byId("rules").showModal());
+
+function resizeCanvas() {
+  const bounds = canvas.getBoundingClientRect();
+  const resolution = Math.max(1, window.devicePixelRatio || 1);
+  canvas.width = Math.max(1, Math.round(bounds.width * resolution));
+  canvas.height = Math.max(1, Math.round(bounds.height * resolution));
+  context.setTransform(canvas.width / WIDTH, 0, 0, canvas.height / HEIGHT, 0, 0);
+  draw();
+}
+
+function draw() {
+  context.clearRect(0, 0, WIDTH, HEIGHT);
+  context.drawImage(surface, 0, 0);
+  const placing = game.phase === "place" && mayPlay();
+  const aiming = game.phase === "aim" && mayPlay();
+  for (const ball of game.balls) {
+    if (!ball.sunk && (ball.id || (game.phase !== "place" && !aiming))) drawBall(context, ball);
+  }
+  if (aiming) {
+    drawAim(context, game, angle, Number(powerInput.value));
+    drawBall(context, game.balls[0]);
+  }
+  if (placing && cursor.x >= LEFT && cursor.x <= RIGHT && cursor.y >= TOP && cursor.y <= BOTTOM) {
+    context.save();
+    context.globalAlpha = canPlace(game, cursor.x, cursor.y) ? .9 : .28;
+    drawBall(context, { id: 0, ...cursor });
+    context.restore();
+  }
+}
+
+function advanceGame(now) {
+  if (game.phase === "rolling") {
+    accumulator += clamp((now - previous) / 1000, 0, 16);
+    while (accumulator >= STEP && game.phase === "rolling") {
+      tick(game);
+      accumulator -= STEP;
+    }
+    if (game.phase !== "rolling") {
+      if (connection.ready && connection.role === "host") send({ type: "state", state: game });
+      if (connection.ready && connection.role === "guest") connection.pending = true;
+      updateUI();
+    }
+  } else {
+    accumulator = 0;
+  }
+  previous = now;
+}
+
+function advanceFrame(now) {
+  advanceGame(now);
+  draw();
+  requestAnimationFrame(advanceFrame);
+}
+
+new ResizeObserver(resizeCanvas).observe(canvas);
+updateUI();
+requestAnimationFrame(advanceFrame);
+setInterval(() => {
+  if (document.hidden) advanceGame(performance.now());
+}, 200);
+
+const networkFields = ["network-choose", "network-exchange", "network-live", "out-label", "copy-row", "in-label", "connect-row", "retry-row"];
+const inCode = byId("in-code");
+const outCode = byId("out-code");
+const connect = byId("connect");
+const codePrefix = "POOL1.";
+let networkStep = "choose";
+
+function showNetworkStep(step, notice = "", error = false) {
+  networkStep = step;
+  for (const field of networkFields) byId(field).hidden = true;
+  const message = byId("net-status");
+  message.hidden = !notice;
+  message.textContent = notice;
+  message.classList.toggle("error", error);
+  if (step === "choose") {
+    byId("network-choose").hidden = false;
+    return;
+  }
+  if (step === "live") {
+    byId("network-live").hidden = false;
+    return;
+  }
+  byId("network-exchange").hidden = false;
+  byId("retry-row").hidden = false;
+  if (["host-answer", "guest-return"].includes(step)) {
+    byId("out-title").textContent = step === "host-answer" ? "Einladungscode" : "Antwortcode";
+    byId("out-label").hidden = byId("copy-row").hidden = false;
+  }
+  if (["host-answer", "guest-invite"].includes(step)) {
+    byId("in-title").textContent = step === "host-answer" ? "Antwortcode einfügen" : "Einladungscode einfügen";
+    connect.textContent = step === "host-answer" ? "Verbinden" : "Antwortcode erstellen";
+    byId("in-label").hidden = byId("connect-row").hidden = false;
+  }
+  connect.disabled = false;
+}
+
+function closeConnection() {
+  const { peer, channel } = connection;
+  clearTimeout(connection.timer);
+  Object.assign(connection, { peer: null, channel: null, role: null, ready: false, pending: false, timer: null });
+  channel?.close();
+  peer?.close();
+  updateUI();
+}
+
+function resetNetwork() {
+  closeConnection();
+  inCode.value = outCode.value = "";
+  showNetworkStep("choose");
+}
+
+function failNetwork(message) {
+  const wasPlaying = connection.ready;
+  closeConnection();
+  if (wasPlaying) {
+    game.note = "Die Verbindung wurde getrennt. Ihr könnt lokal weiterspielen.";
+    updateUI();
+  }
+  showNetworkStep("error", message, true);
+  if (!onlineDialog.open) onlineDialog.showModal();
+}
+
+function waitForPeer(peer) {
+  clearTimeout(connection.timer);
+  connection.timer = setTimeout(() => {
+    if (connection.peer === peer && !connection.ready) failNetwork("Die Verbindung ist abgelaufen. Prüft die Codes oder versucht es in einem anderen Netz.");
+  }, 45000);
+}
+
+function encodeDescription(description) {
+  return codePrefix + btoa(JSON.stringify({ type: description.type, sdp: description.sdp }));
+}
+
+function readDescription(value, expectedType) {
+  const cleaned = value.replace(/\s+/g, "");
+  if (!cleaned.startsWith(codePrefix) || cleaned.length > 48000) throw new Error("Code ungültig");
+  const description = JSON.parse(atob(cleaned.slice(codePrefix.length)));
+  if (!description || description.type !== expectedType || typeof description.sdp !== "string") throw new Error("Code ungültig");
+  return description;
+}
+
+function getLocalDescription(peer) {
+  if (peer.iceGatheringState === "complete") return Promise.resolve(peer.localDescription);
+  return new Promise(resolve => {
+    const done = () => {
+      clearTimeout(timer);
+      peer.removeEventListener("icegatheringstatechange", onChange);
+      resolve(peer.localDescription);
+    };
+    const onChange = () => { if (peer.iceGatheringState === "complete") done(); };
+    const timer = setTimeout(done, 9000);
+    peer.addEventListener("icegatheringstatechange", onChange);
+  });
+}
+
+function send(message) {
+  const channel = connection.channel;
+  if (!channel || channel.readyState !== "open") return false;
+  try {
+    channel.send(JSON.stringify(message));
+    return true;
+  } catch {
+    failNetwork("Der Browser konnte die Nachricht nicht senden. Erstellt eine neue Verbindung.");
+    return false;
+  }
+}
+
+function bindChannel(channel, peer) {
+  connection.channel = channel;
+  const active = () => connection.peer === peer && connection.channel === channel;
+  const connected = () => {
+    if (!active() || connection.ready) return;
+    clearTimeout(connection.timer);
+    connection.ready = true;
+    connection.pending = connection.role === "guest";
+    if (connection.role === "host") newGame(true);
+    showNetworkStep("live");
+    if (onlineDialog.open) onlineDialog.close();
+    updateUI();
+  };
+  channel.addEventListener("close", () => {
+    if (active()) failNetwork("Die Verbindung wurde getrennt. Erstellt eine neue Einladung, um wieder online zu spielen.");
+  });
+  channel.addEventListener("message", event => {
+    if (!active() || !connection.ready || typeof event.data !== "string" || event.data.length > 12000) return;
+    let message;
+    try { message = JSON.parse(event.data); } catch { return; }
+    if (!message || typeof message !== "object") return;
+    if (connection.role === "host") {
+      if (message.type === "shot" || message.type === "place") applyAction(message, 1);
+    } else if (message.type === "animate" && message.sequence === game.sequence) {
+      startShot(game, message.angle, message.power);
+      connection.pending = false;
+      updateUI();
+    } else if (message.type === "state" && isGameState(message.state)) {
+      accumulator = 0;
+      game = message.state;
+      if (game.breaking) angle = 0;
+      connection.pending = false;
+      updateUI();
+    }
+  });
+  channel.addEventListener("open", connected, { once: true });
+  if (channel.readyState === "open") connected();
+}
+
+function isGameState(state) {
+  if (!state || !["aim", "place", "over"].includes(state.phase) || ![0, 1].includes(state.turn) || ![null, 0, 1].includes(state.winner)) return false;
+  if (!Array.isArray(state.groups) || state.groups.length !== 2 || !state.groups.every(group => [null, "full", "stripe"].includes(group))) return false;
+  if (!Array.isArray(state.score) || state.score.length !== 2 || !state.score.every(Number.isSafeInteger)) return false;
+  return Number.isSafeInteger(state.sequence) && Array.isArray(state.balls) && state.balls.length === 16 &&
+    state.balls.every((ball, id) => ball && ball.id === id && [ball.x, ball.y, ball.vx, ball.vy].every(Number.isFinite));
+}
+
+function makePeer(role) {
+  const peer = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.l.google.com:19302" }] });
+  connection.peer = peer;
+  connection.role = role;
+  peer.addEventListener("connectionstatechange", () => {
+    if (connection.peer !== peer) return;
+    if (peer.connectionState === "failed") failNetwork("Die Browser konnten sich nicht direkt erreichen. Andere WLANs oder ein Hotspot können helfen.");
+    else if (peer.connectionState === "disconnected") {
+      clearTimeout(connection.timer);
+      connection.timer = setTimeout(() => {
+        if (connection.peer === peer && peer.connectionState === "disconnected") failNetwork("Die Verbindung wurde unterbrochen. Erstellt eine neue Einladung.");
+      }, 12000);
+    } else if (peer.connectionState === "connected" && connection.ready) clearTimeout(connection.timer);
+  });
+  if (role === "host") bindChannel(peer.createDataChannel("8-ball"), peer);
+  else peer.addEventListener("datachannel", event => {
+    if (connection.peer === peer && !connection.channel && event.channel.label === "8-ball") bindChannel(event.channel, peer);
+  });
+  return peer;
+}
+
+byId("online-mode").addEventListener("click", () => {
+  if (typeof RTCPeerConnection !== "function") showNetworkStep("error", "Dieser Browser unterstützt die Direktverbindung nicht. Öffnet die Datei in einem aktuellen Browser.", true);
+  onlineDialog.showModal();
+});
+byId("local-mode").addEventListener("click", resetNetwork);
+byId("disconnect").addEventListener("click", () => { resetNetwork(); onlineDialog.close(); });
+byId("retry").addEventListener("click", resetNetwork);
+byId("join").addEventListener("click", () => {
+  showNetworkStep("guest-invite", "Füge den Code der Person ein, die zur Partie eingeladen hat.");
+  inCode.focus();
+});
+byId("host").addEventListener("click", async () => {
+  showNetworkStep("working", "Einladung wird erstellt …");
+  let peer;
+  try {
+    peer = makePeer("host");
+    await peer.setLocalDescription(await peer.createOffer());
+    const description = await getLocalDescription(peer);
+    if (connection.peer !== peer) return;
+    outCode.value = encodeDescription(description);
+    showNetworkStep("host-answer", "Schick die Einladung an dein Gegenüber. Füge danach den erhaltenen Antwortcode ein.");
+  } catch {
+    if (!peer || connection.peer === peer) failNetwork("Die Einladung konnte nicht erstellt werden. Versucht es erneut.");
+  }
+});
+connect.addEventListener("click", async () => {
+  const inviting = networkStep === "host-answer";
+  const step = networkStep;
+  let description;
+  try {
+    description = readDescription(inCode.value, inviting ? "answer" : "offer");
+  } catch {
+    showNetworkStep(step, "Der Code ist ungültig. Kopiere den vollständigen Code.", true);
+    return;
+  }
+  let peer;
+  connect.disabled = true;
+  try {
+    if (inviting) {
+      peer = connection.peer;
+      await peer.setRemoteDescription(description);
+      if (connection.peer !== peer || connection.ready) return;
+      showNetworkStep("working", "Verbindung wird aufgebaut …");
+      waitForPeer(peer);
+    } else {
+      peer = makePeer("guest");
+      await peer.setRemoteDescription(description);
+      await peer.setLocalDescription(await peer.createAnswer());
+      const answer = await getLocalDescription(peer);
+      if (connection.peer !== peer || connection.ready) return;
+      outCode.value = encodeDescription(answer);
+      showNetworkStep("guest-return", "Schick den Antwortcode zurück. Sobald er eingefügt wurde, startet die Partie.");
+    }
+  } catch {
+    if (peer && connection.peer !== peer) return;
+    if (!inviting) closeConnection();
+    showNetworkStep(step, "Der Browser konnte den Code nicht verwenden. Prüft, dass beide Codes zur selben Einladung gehören.", true);
+  }
+});
+byId("copy").addEventListener("click", async () => {
+  outCode.focus();
+  outCode.select();
+  const message = byId("net-status");
+  try {
+    if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(outCode.value);
+    else if (!document.execCommand("copy")) throw new Error("Zwischenablage nicht verfügbar");
+    message.textContent = "Code kopiert. Schick ihn an dein Gegenüber.";
+  } catch {
+    message.textContent = "Code markiert. Kopiere ihn mit Strg+C (Mac: ⌘C).";
+  }
+  message.classList.remove("error");
+  message.hidden = false;
+});
+
+</script>
+</body>
+</html>
+
