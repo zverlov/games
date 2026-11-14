@@ -16,6 +16,7 @@ dialog{border:1px solid #52634d;border-radius:17px;padding:0;width:min(500px,cal
 @media(max-width:740px){.balls{display:none}.controls{gap:12px}.bar-inner{padding:0 14px}main{padding:19px 12px}.stage{padding:4px;border-radius:15px}.table-surface{border-radius:11px}}
 @media(max-width:500px){.bar-inner{min-height:56px}.brand{letter-spacing:.08em;font-size:.72rem;gap:7px}.brand-ball{width:26px;height:26px}.modes button{font-size:.75rem;padding:7px 8px}.modes .dot{display:none}.heading{margin-bottom:13px}.scoreboard{gap:5px}.player{padding:6px;gap:5px}.player,.score{min-height:51px;border-radius:8px}.avatar{width:23px;height:23px;font-size:.68rem}.player strong{font-size:.74rem}.player .group{font-size:.65rem}.controls{grid-template-columns:1fr;padding:11px}.shot-controls{justify-content:space-between}.power{flex:1;width:auto}.heading .flat{font-size:.75rem;padding:7px 9px}}
 .table-surface canvas{position:absolute;inset:0}
+.foot{gap:16px}
 </style>
 </head>
 <body>
@@ -37,7 +38,7 @@ dialog{border:1px solid #52634d;border-radius:17px;padding:0;width:min(500px,cal
   </section>
   <section class="stage" aria-label="Billardtisch">
     <div class="table-surface">
-      <canvas id="table" tabindex="0" aria-label="Billardtisch. Mit Maus oder Touch zielen. Mit Pfeiltasten zielen und mit Leertaste stoßen."></canvas>
+      <canvas id="table" tabindex="0" aria-label="Billardtisch. Klicken oder tippen zum Fixieren und Lösen der Richtung. Pfeiltasten zum Zielen, Leertaste zum Stoßen."></canvas>
       <div class="win-banner" id="win-banner" hidden><span class="title-ball" aria-hidden="true"><b>8</b></span><strong id="win-text"></strong><button id="rematch" class="accent">Nächste Partie</button></div>
     </div>
   </section>
@@ -48,8 +49,23 @@ dialog{border:1px solid #52634d;border-radius:17px;padding:0;width:min(500px,cal
       <button class="accent" id="shoot">Stoßen</button>
     </div>
   </section>
-  <div class="foot"><button class="link" id="rules-button">Spielregeln</button></div>
+  <div class="foot">
+    <button class="link" id="controls-button" aria-haspopup="dialog">Steuerung</button>
+    <button class="link" id="rules-button" aria-haspopup="dialog">Spielregeln</button>
+  </div>
 </main>
+<dialog id="controls-help" aria-labelledby="controls-title">
+  <div class="dialog-inner">
+    <div class="dialog-head"><h2 id="controls-title">Steuerung</h2><form method="dialog"><button type="submit" class="close" aria-label="Schließen">×</button></form></div>
+    <ul>
+      <li><strong>Maus:</strong> Bewege den Zeiger über den Tisch, um zu zielen. Klicke, um die Richtung zu fixieren. Ein weiterer Klick oder Esc löst sie.</li>
+      <li><strong>Touch:</strong> Tippe in die gewünschte Richtung, um sie zu fixieren. Tippe erneut auf den Tisch, um das Ziel zu lösen.</li>
+      <li><strong>Stoßen:</strong> Stell die Stoßkraft am Regler ein. Drücke die Leertaste oder wähle „Stoßen“.</li>
+      <li><strong>Fein zielen:</strong> Bei freier Richtung kannst du am fokussierten Tisch mit den Pfeiltasten zielen. Halte Umschalt für kleinere Schritte.</li>
+      <li><strong>Weiße platzieren:</strong> Klicke oder tippe nach einem Foul auf eine freie Stelle. Mit Tastatur verschiebst du die Weiße am Tisch mit den Pfeiltasten und legst sie mit Enter ab.</li>
+    </ul>
+  </div>
+</dialog>
 <dialog id="rules">
   <div class="dialog-inner">
     <div class="dialog-head"><h2>Spielregeln</h2><form method="dialog"><button type="submit" class="close" aria-label="Schließen">×</button></form></div>
@@ -549,6 +565,7 @@ const onlineDialog = byId("online");
 const connection = { peer: null, channel: null, role: null, ready: false, pending: false, timer: null };
 let game = rack();
 let angle = 0;
+let aimLocked = false;
 let cursor = { x: 287, y: HEIGHT / 2 };
 let accumulator = 0;
 let previous = performance.now();
@@ -571,6 +588,7 @@ function mayRestart() {
 }
 
 function updateUI() {
+  if (game.phase !== "aim" || !mayPlay()) aimLocked = false;
   for (let player = 0; player < 2; player++) {
     const group = game.groups[player];
     byId(`player-${player}`).classList.toggle("active", player === game.turn && game.phase !== "over");
@@ -596,7 +614,9 @@ function updateUI() {
   } else if (game.phase === "place" && mayPlay()) {
     hint += " Tippe oder klicke auf eine freie Stelle.";
   } else if (game.phase === "aim" && mayPlay()) {
-    hint += " Auf dem Tisch zielen, dann stoßen.";
+    hint += " " + (aimLocked
+      ? "Ziel fixiert. Erneut klicken oder tippen zum Lösen."
+      : "Auf den Tisch klicken oder tippen, um das Ziel zu fixieren.");
   } else if (game.phase === "over") {
     status = connection.ready && game.winner === localPlayer() ? "Du hast gewonnen!" : `${playerName(game.winner)} gewinnt!`;
   }
@@ -619,6 +639,7 @@ function newGame(resetScore = false) {
   const next = game.phase === "over" ? 1 - game.starter : game.starter;
   game = rack(resetScore ? [0, 0] : game.score, resetScore ? 0 : next, game.sequence + 1);
   angle = 0;
+  aimLocked = false;
   updateUI();
   if (connection.ready && connection.role === "host") send({ type: "state", state: game });
 }
@@ -652,29 +673,57 @@ function shoot() {
   if (game.phase === "aim") play({ type: "shot", angle, power: Number(powerInput.value) });
 }
 
-function aim(event) {
+function movePointer(event) {
   const rect = canvas.getBoundingClientRect();
   cursor = { x: (event.clientX - rect.left) * WIDTH / rect.width, y: (event.clientY - rect.top) * HEIGHT / rect.height };
-  const cue = game.balls[0];
-  if (Math.hypot(cursor.x - cue.x, cursor.y - cue.y) > 1) angle = Math.atan2(cursor.y - cue.y, cursor.x - cue.x);
+  if (game.phase === "aim" && !aimLocked) {
+    const cue = game.balls[0];
+    if (Math.hypot(cursor.x - cue.x, cursor.y - cue.y) > 1) angle = Math.atan2(cursor.y - cue.y, cursor.x - cue.x);
+  }
 }
 
-canvas.addEventListener("pointermove", aim);
+canvas.addEventListener("pointermove", event => {
+  if (event.isPrimary && mayPlay()) movePointer(event);
+});
 canvas.addEventListener("pointerdown", event => {
   if (!event.isPrimary || event.button !== 0 || !mayPlay()) return;
-  aim(event);
   canvas.focus({ preventScroll: true });
-  if (game.phase === "place" && canPlace(game, cursor.x, cursor.y)) play({ type: "place", ...cursor });
+  if (game.phase === "aim") {
+    if (!aimLocked) movePointer(event);
+    aimLocked = !aimLocked;
+    updateUI();
+  } else if (game.phase === "place") {
+    movePointer(event);
+    if (canPlace(game, cursor.x, cursor.y)) play({ type: "place", ...cursor });
+  }
 });
+
+document.addEventListener("keydown", event => {
+  if (event.defaultPrevented || (event.key !== " " && event.key !== "Escape")) return;
+  if (!mayPlay() || game.phase !== "aim" || document.querySelector("dialog[open]")) return;
+  if (event.key === "Escape") {
+    if (!aimLocked) return;
+    aimLocked = false;
+    updateUI();
+  } else {
+    if (event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) return;
+    if (![document.body, document.documentElement, canvas, powerInput].includes(event.target)) return;
+    if (!event.repeat) shoot();
+  }
+  event.preventDefault();
+});
+
 canvas.addEventListener("keydown", event => {
-  if (!mayPlay() || !["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", " "].includes(event.key)) return;
+  if (!mayPlay() || !["aim", "place"].includes(game.phase)) return;
+  const arrow = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key);
+  if (!arrow && event.key !== "Enter" && !(game.phase === "place" && event.key === " ")) return;
   event.preventDefault();
   if (game.phase === "aim") {
-    if (event.key === " " || event.key === "Enter") shoot();
-    else angle += (event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1) * (event.shiftKey ? .003 : .02);
+    if (!arrow && !event.repeat) shoot();
+    if (arrow && !aimLocked) angle += (event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1) * (event.shiftKey ? .003 : .02);
   } else if (game.phase === "place") {
     if (event.key === "Enter" || event.key === " ") {
-      if (canPlace(game, cursor.x, cursor.y)) play({ type: "place", ...cursor });
+      if (!event.repeat && canPlace(game, cursor.x, cursor.y)) play({ type: "place", ...cursor });
     } else {
       const dx = event.key === "ArrowLeft" ? -1 : event.key === "ArrowRight" ? 1 : 0;
       const dy = event.key === "ArrowUp" ? -1 : event.key === "ArrowDown" ? 1 : 0;
@@ -688,6 +737,7 @@ shootButton.addEventListener("click", shoot);
 restartButton.addEventListener("click", () => { if (mayRestart()) newGame(); });
 byId("rematch").addEventListener("click", () => { if (mayRestart()) newGame(); });
 byId("rules-button").addEventListener("click", () => byId("rules").showModal());
+byId("controls-button").addEventListener("click", () => byId("controls-help").showModal());
 
 function resizeCanvas() {
   const bounds = canvas.getBoundingClientRect();
@@ -787,6 +837,7 @@ function showNetworkStep(step, notice = "", error = false) {
 
 function closeConnection() {
   const { peer, channel } = connection;
+  if (connection.ready) aimLocked = false;
   clearTimeout(connection.timer);
   Object.assign(connection, { peer: null, channel: null, role: null, ready: false, pending: false, timer: null });
   channel?.close();
@@ -886,6 +937,7 @@ function bindChannel(channel, peer) {
     } else if (message.type === "state" && isGameState(message.state)) {
       accumulator = 0;
       game = message.state;
+      aimLocked = false;
       if (game.breaking) angle = 0;
       connection.pending = false;
       updateUI();
