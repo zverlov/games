@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="t">
+  <title id="t">Zwei Kulis, ein Lineal und vier Bleistifte</title>
+  <defs>
+    <g id="kuli" stroke="#2b2420" stroke-width="3" stroke-linejoin="round">
+      <rect x="-10" y="-5" width="12" height="10" rx="2" fill="#9fb8e8"/>
+      <rect x="0" y="-8" width="122" height="16" rx="8" fill="#1d5fd6"/>
+      <rect x="28" y="-13" width="44" height="6" rx="3" fill="#9fb8e8"/>
+      <path d="M122 -6 L146 0 L122 6 Z" fill="#c9ced6"/>
+    </g>
+    <g id="lineal" stroke="#2b2420" stroke-width="3" stroke-linejoin="round">
+      <rect x="0" y="-12" width="172" height="24" rx="3" fill="#f2c879"/>
+      <path d="M12 -12 v7 M24 -12 v11 M36 -12 v7 M48 -12 v11 M60 -12 v7 M72 -12 v11 M84 -12 v7 M96 -12 v11 M108 -12 v7 M120 -12 v11 M132 -12 v7 M144 -12 v11 M156 -12 v7" stroke-width="2"/>
+    </g>
+    <g id="bleistift" stroke="#2b2420" stroke-width="3" stroke-linejoin="round">
+      <rect x="-30" y="-8" width="16" height="16" rx="5" fill="#f28aa0"/>
+      <rect x="-16" y="-8" width="16" height="16" fill="#c9ced6"/>
+      <rect x="0" y="-8" width="118" height="16" fill="#ffd21f"/>
+      <path d="M118 -8 L146 0 L118 8 Z" fill="#f0c591"/>
+      <path d="M138 -2.5 L146 0 L138 2.5 Z" fill="#2b2420"/>
+    </g>
+  </defs>
+  <rect width="400" height="300" rx="18" fill="#f7f3ea"/>
+  <use href="#kuli" x="22" y="52"/>
+  <use href="#kuli" x="22" y="96"/>
+  <use href="#lineal" x="18" y="178"/>
+  <use href="#bleistift" x="236" y="48"/>
+  <use href="#bleistift" x="236" y="108"/>
+  <use href="#bleistift" x="236" y="168"/>
+  <use href="#bleistift" x="236" y="228"/>
+</svg>

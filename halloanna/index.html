@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>München-Mission · Annas Theaterkarten</title>
+  <link rel="icon" href="assets/rucksack-blauer-stern.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="sprunglink" href="#hauptinhalt">Zum Inhalt springen</a>
+
+  <header class="kopf">
+    <div class="kopf-innen">
+      <p class="marke">
+        <img class="marke-bild" src="assets/rucksack-blauer-stern.svg" alt="" width="40" height="30">
+        <span>München-Mission</span>
+      </p>
+      <p class="fortschritt" id="fortschritt">0 von 10 Aufgaben gelöst</p>
+      <button type="button" class="knopf knopf-neben" id="knopf-notizbuch">
+        <span aria-hidden="true">📓</span><span class="kopf-knopf-text">Notizbuch</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Die Karte ist die Bühne. Szenen öffnen sich als Fenster darüber. -->
+  <main id="hauptinhalt" class="buehne">
+
+    <section class="leiste" id="leiste" aria-labelledby="leiste-titel">
+      <h1 id="leiste-titel" tabindex="-1">Annas Theaterkarten</h1>
+      <div class="leiste-text" id="leiste-text"></div>
+      <div class="knopfzeile">
+        <button type="button" class="knopf knopf-haupt" id="knopf-leiste">Mission starten</button>
+      </div>
+    </section>
+
+    <figure class="karte" id="karte">
+      <div class="karte-scroll" id="karte-scroll">
+        <div class="karte-rahmen">
+          <img class="karte-bild" src="assets/karte.svg" alt="" width="1000" height="700">
+          <svg class="karte-ebene" id="karte-ebene" viewBox="0 0 1000 700" focusable="false">
+            <path class="spur" id="spur-fertig" d=""></path>
+            <path class="spur" id="spur-aktuell" d=""></path>
+            <g id="karte-orte" role="group" aria-label="Orte auf der Karte"></g>
+            <g class="anna" id="anna" aria-hidden="true" transform="translate(236 505)">
+              <g class="anna-koerper">
+                <g transform="translate(-23 -67) scale(1.15)">
+                  <ellipse cx="20" cy="57.5" rx="11" ry="2.5" fill="#000" opacity="0.15"/>
+                  <rect x="13.5" y="40" width="5.5" height="14" rx="2.5" fill="#2f6fd6"/>
+                  <rect x="21" y="40" width="5.5" height="14" rx="2.5" fill="#2f6fd6"/>
+                  <rect x="11.5" y="52" width="8.5" height="5" rx="2.5" fill="#e2372b"/>
+                  <rect x="20" y="52" width="8.5" height="5" rx="2.5" fill="#e2372b"/>
+                  <rect x="7" y="27" width="4.5" height="13" rx="2.2" fill="#f6c9a0"/>
+                  <rect x="28.5" y="27" width="4.5" height="13" rx="2.2" fill="#f6c9a0"/>
+                  <path d="M12 26 h16 l4.5 17 h-25 z" fill="#ffd21f" stroke="#2b2420" stroke-width="1.5" stroke-linejoin="round"/>
+                  <circle cx="20" cy="16" r="9.5" fill="#f6c9a0" stroke="#2b2420" stroke-width="1.5"/>
+                  <path d="M10.5 15 q9.5 -14 19 0 q-1 -6 -9.5 -7 q-8.5 1 -9.5 7 z" fill="#8a5a2b"/>
+                  <circle cx="30.5" cy="12" r="3.8" fill="#8a5a2b"/>
+                  <circle cx="16.8" cy="16.5" r="1.3" fill="#2b2420"/>
+                  <circle cx="23.2" cy="16.5" r="1.3" fill="#2b2420"/>
+                  <path d="M17.5 20.5 q2.5 2.2 5 0" stroke="#2b2420" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+                </g>
+              </g>
+              <g class="anna-blase" id="anna-blase" visibility="hidden">
+                <rect id="anna-blase-rahmen" x="-50" y="-104" width="100" height="30" rx="9"/>
+                <path d="M-7 -75 L0 -66 L7 -75 Z"/>
+                <text id="anna-blase-text" x="0" y="-83" text-anchor="middle"></text>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <figcaption class="karte-beschriftung" id="karte-beschriftung">
+        Annas Weg durch Schwabing. Tippe auf einen Ort.
+      </figcaption>
+    </figure>
+    <p class="karte-status" id="karte-status" role="status" aria-live="polite"></p>
+
+    <section class="orte" aria-labelledby="orte-titel">
+      <h2 class="orte-titel" id="orte-titel">Orte</h2>
+      <ul class="orte-liste" id="orte-liste"></ul>
+    </section>
+
+    <ul class="legende" aria-label="Zeichenerklärung">
+      <li><span class="legende-punkt ist-aktuell" aria-hidden="true"></span> Hier ist Anna gerade</li>
+      <li><span class="legende-punkt ist-geloest" aria-hidden="true"></span> Aufgabe gelöst</li>
+      <li><span class="legende-punkt ist-offen" aria-hidden="true"></span> Noch nicht besucht</li>
+    </ul>
+
+    <p class="fusszeile">
+      <button type="button" class="knopf knopf-leise" id="knopf-neustart-karte">Neu beginnen</button>
+    </p>
+  </main>
+
+  <!-- Fenster über der Karte: Szene, Rückschau oder Abschluss -->
+  <dialog class="fenster" id="fenster" aria-labelledby="fenster-titel">
+    <div class="fenster-leiste">
+      <button type="button" class="knopf knopf-neben" id="knopf-zur-karte">
+        <span aria-hidden="true">←</span> Zur Karte
+      </button>
+      <p class="fenster-ort" id="fenster-ort"></p>
+      <button type="button" class="knopf knopf-neben" id="knopf-fenster-notizbuch">
+        <span aria-hidden="true">📓</span><span class="kopf-knopf-text">Notizbuch</span>
+      </button>
+    </div>
+
+    <section id="ansicht-szene" hidden>
+      <article class="tafel">
+        <p class="tafel-oben" id="szene-nummer"></p>
+        <h1 class="tafel-titel" id="szene-titel" tabindex="-1"></h1>
+        <div class="erzaehlung" id="szene-text"></div>
+
+        <h2 class="frage" id="szene-frage"></h2>
+        <div class="antworten" id="szene-antworten" role="group" aria-labelledby="szene-frage"></div>
+
+        <div class="tipp">
+          <button type="button" class="knopf knopf-leise" id="knopf-tipp" aria-expanded="false" aria-controls="tipp-text">
+            <span aria-hidden="true">💡</span> Tipp anzeigen
+          </button>
+          <p class="tipp-text" id="tipp-text" hidden></p>
+        </div>
+
+        <p class="rueckmeldung" id="szene-rueckmeldung" role="status" aria-live="polite"></p>
+
+        <div class="danach" id="szene-danach" hidden>
+          <p class="danach-text" id="danach-text"></p>
+          <p class="notiz-hinweis" id="notiz-hinweis">
+            <span aria-hidden="true">📓</span> <span id="notiz-hinweis-text"></span>
+          </p>
+          <div class="wegweiser" id="wegweiser" hidden></div>
+          <button type="button" class="knopf knopf-haupt" id="knopf-weiter">Weiter</button>
+        </div>
+      </article>
+    </section>
+
+    <section id="ansicht-rueckschau" hidden>
+      <h1 class="rueckschau-titel" id="rueckschau-titel" tabindex="-1"></h1>
+      <div id="rueckschau-inhalt"></div>
+    </section>
+
+    <section id="ansicht-finale" hidden>
+      <article class="tafel finale">
+        <p class="tafel-oben">Schauburg · Vorstellung</p>
+        <h1 class="tafel-titel" id="finale-titel" tabindex="-1">Rucksack gefunden!</h1>
+        <div class="finale-bild" aria-hidden="true">
+          <img src="assets/rucksack-blauer-stern.svg" alt="" width="200" height="150">
+          <img class="finale-karten" src="assets/theaterkarten.svg" alt="" width="200" height="150">
+        </div>
+        <div class="erzaehlung" id="finale-text"></div>
+        <div class="knopfzeile">
+          <button type="button" class="knopf knopf-haupt" id="knopf-finale-notizbuch">Notizbuch ansehen</button>
+          <button type="button" class="knopf knopf-neben" id="knopf-finale-karte">Zur Karte</button>
+          <button type="button" class="knopf knopf-leise" id="knopf-finale-neustart">Neu beginnen</button>
+        </div>
+      </article>
+    </section>
+  </dialog>
+
+  <dialog class="dialog notizbuch" id="notizbuch" aria-labelledby="notizbuch-titel">
+    <div class="dialog-kopf">
+      <h2 id="notizbuch-titel"><span aria-hidden="true">📓</span> Notizbuch</h2>
+      <button type="button" class="knopf knopf-neben" id="knopf-notizbuch-schliessen">Schließen</button>
+    </div>
+    <p class="notizen-leer" id="notizbuch-leer">Noch keine Hinweise. Löse die erste Aufgabe!</p>
+    <ol class="notizen" id="notizbuch-liste"></ol>
+  </dialog>
+
+  <dialog class="dialog" id="dialog-neustart" aria-labelledby="neustart-titel">
+    <h2 id="neustart-titel">Neu beginnen?</h2>
+    <p>Alle gelösten Aufgaben und das Notizbuch werden gelöscht. Anna fängt wieder am Elisabethplatz an.</p>
+    <div class="knopfzeile">
+      <button type="button" class="knopf knopf-gefahr" id="knopf-neustart-ja">Ja, neu beginnen</button>
+      <button type="button" class="knopf knopf-neben" id="knopf-neustart-nein">Abbrechen</button>
+    </div>
+  </dialog>
+
+  <script src="szenen.js"></script>
+  <script src="spiel.js"></script>
+</body>
+</html>

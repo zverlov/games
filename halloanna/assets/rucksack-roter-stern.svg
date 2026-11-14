@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="t">
+  <title id="t">Blau-grüner Rucksack mit rotem Stern</title>
+  <rect width="400" height="300" rx="18" fill="#f7f3ea"/>
+  <g stroke="#2b2420" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="200" cy="272" rx="95" ry="9" fill="#000" stroke="none" opacity="0.08"/>
+    <!-- Träger -->
+    <path d="M150 95 Q100 165 128 248" stroke-width="24" fill="none"/>
+    <path d="M250 95 Q300 165 272 248" stroke-width="24" fill="none"/>
+    <path d="M150 95 Q100 165 128 248" stroke="#3aa655" stroke-width="14" fill="none"/>
+    <path d="M250 95 Q300 165 272 248" stroke="#3aa655" stroke-width="14" fill="none"/>
+    <!-- Griff -->
+    <path d="M176 72 Q200 36 224 72" stroke-width="18" fill="none"/>
+    <path d="M176 72 Q200 36 224 72" stroke="#3aa655" stroke-width="9" fill="none"/>
+    <!-- Körper -->
+    <path d="M120 250 V125 Q120 68 200 68 Q280 68 280 125 V250 Q280 264 266 264 H134 Q120 264 120 250 Z" fill="#1d5fd6" stroke-width="5"/>
+    <path d="M132 118 Q200 78 268 118" fill="none" stroke-width="3" opacity="0.5"/>
+    <!-- Stern -->
+    <polygon points="200,105 207.35,124.89 228.53,125.73 211.89,138.86 217.63,159.27 200,147.5 182.37,159.27 188.11,138.86 171.47,125.73 192.65,124.89" fill="#e2372b" stroke-width="5"/>
+    <!-- Vordertasche -->
+    <rect x="148" y="182" width="104" height="62" rx="16" fill="#3aa655" stroke-width="5"/>
+    <path d="M160 198 H240" stroke-width="3"/>
+    <rect x="166" y="198" width="9" height="18" rx="4" fill="#3aa655" stroke-width="3"/>
+  </g>
+</svg>

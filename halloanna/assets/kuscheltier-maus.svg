@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="t">
+  <title id="t">Eine graue Stoffmaus</title>
+  <rect width="400" height="300" rx="18" fill="#f7f3ea"/>
+  <ellipse cx="200" cy="272" rx="90" ry="9" fill="#000" opacity="0.07"/>
+  <g transform="translate(200 168)" stroke="#2b2420" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Schwanz -->
+    <path d="M52 70 Q118 76 104 26 Q98 8 84 16" fill="none" stroke-width="14"/>
+    <path d="M52 70 Q118 76 104 26 Q98 8 84 16" fill="none" stroke="#f4b6c2" stroke-width="7"/>
+    <!-- Ohren -->
+    <circle cx="-54" cy="-76" r="28" fill="#a9a39c"/>
+    <circle cx="54" cy="-76" r="28" fill="#a9a39c"/>
+    <circle cx="-54" cy="-76" r="16" fill="#f4b6c2" stroke="none"/>
+    <circle cx="54" cy="-76" r="16" fill="#f4b6c2" stroke="none"/>
+    <!-- Arme -->
+    <ellipse cx="-56" cy="34" rx="16" ry="30" fill="#a9a39c" transform="rotate(20 -56 34)"/>
+    <ellipse cx="56" cy="34" rx="16" ry="30" fill="#a9a39c" transform="rotate(-20 56 34)"/>
+    <!-- Körper -->
+    <ellipse cx="0" cy="44" rx="58" ry="54" fill="#a9a39c"/>
+    <ellipse cx="0" cy="56" rx="34" ry="32" fill="#e8e1d8" stroke="none"/>
+    <path d="M-30 56 Q0 32 30 56" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="5 5" opacity="0.9"/>
+    <!-- Füße -->
+    <ellipse cx="-30" cy="92" rx="24" ry="14" fill="#a9a39c"/>
+    <ellipse cx="30" cy="92" rx="24" ry="14" fill="#a9a39c"/>
+    <ellipse cx="-30" cy="92" rx="13" ry="7" fill="#f4b6c2" stroke="none"/>
+    <ellipse cx="30" cy="92" rx="13" ry="7" fill="#f4b6c2" stroke="none"/>
+    <!-- Kopf -->
+    <circle cx="0" cy="-36" r="52" fill="#a9a39c"/>
+    <path d="M-36 -20 Q0 -4 36 -20" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="5 5" opacity="0.9"/>
+    <!-- Augen -->
+    <circle cx="-20" cy="-44" r="7" fill="#2b2420" stroke="none"/>
+    <circle cx="20" cy="-44" r="7" fill="#2b2420" stroke="none"/>
+    <circle cx="-17" cy="-47" r="2.5" fill="#fff" stroke="none"/>
+    <circle cx="23" cy="-47" r="2.5" fill="#fff" stroke="none"/>
+    <!-- Nase, Mund, Schnurrhaare -->
+    <ellipse cx="0" cy="-18" rx="9" ry="7" fill="#f28aa0"/>
+    <path d="M-8 -8 q8 8 16 0" fill="none" stroke-width="3"/>
+    <path d="M-16 -16 h-26 M-16 -10 l-24 8 M16 -16 h26 M16 -10 l24 8" stroke-width="2.5"/>
+    <circle cx="-34" cy="-22" r="6" fill="#f4b6c2" stroke="none" opacity="0.8"/>
+    <circle cx="34" cy="-22" r="6" fill="#f4b6c2" stroke="none" opacity="0.8"/>
+  </g>
+</svg>
