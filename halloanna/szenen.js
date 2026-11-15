@@ -90,7 +90,7 @@ const SZENEN = [
     ort: "schreibwaren",
     titel: "Bei Frau Braun",
     text: [
-      "Anna kauft zwei Kulis, ein Lineal und vier Bleistifte. Dann fragt sie nach ihrem Rucksack.",
+      "Anna kauft zwei Kulis, ein Lineal und vier Bleistifte. Dann fragt sie Frau Braun, die Verkäuferin, nach ihrem Rucksack.",
       { wer: "Frau Braun", sagt: "Tina hatte deinen Rucksack. Schau mal in der Bibliothek nach. Dort wollte sie hin." }
     ],
     frage: "Was kauft Anna im Schreibwarengeschäft?",
@@ -274,8 +274,8 @@ const ABSCHLUSS = {
 const START = {
   titel: "Annas Theaterkarten",
   text: [
-    "Anna und Benno wollen in die Schauburg. Dort gibt es heute Kindertheater.",
+    "Anna und Benno gehen in die Schauburg. Das ist das Kindertheater in Schwabing.",
     "Die Karten sind in Annas Rucksack. Aber der Rucksack ist weg!",
-    "Hilf Anna. Geh mit ihr durch Schwabing und löse an jedem Ort eine Aufgabe."
+    "Hilf Anna den Rucksack suchen. Geh mit ihr durch Schwabing und löse an jedem Ort eine Aufgabe."
   ]
 };

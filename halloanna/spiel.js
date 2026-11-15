@@ -366,7 +366,7 @@
         textTeil.append(el("p", { class: "zitat", text: letzte ? letzte.danach : "" }));
         textTeil.append(el("p", { class: "finde", text: `Finde: ${ziel.name}!` }));
       }
-      textTeil.append(el("p", { class: "suche-hinweis", text: "Tippe auf der Karte auf den Ort, oder wähle ihn unter der Karte." }));
+      textTeil.append(el("p", { class: "suche-hinweis", text: "Tippe auf den Ort auf der Karte oder wähle ihn unter der Karte." }));
       const bildTeil = el("figure", { class: "suchbild-rahmen" }, [
         suchbild(ziel),
         el("figcaption", { class: "suchbild-beschriftung", text: "So sieht es aus" })
